@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  server:
+    build:
+      context: Server
+      dockerfile: Battleship.WebApi/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+    ports:
+      - "8080:80"
+
+  ui:
+    build:
+      context: UI/battleship
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    environment:
+      SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: Developer
+      ACCEPT_EULA: Y
+
+volumes:
+  mssql-data:
+    driver: local
